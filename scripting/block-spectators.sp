@@ -92,7 +92,7 @@ public Action CommandListener_JoinTeam(int client, const char[] command, int arg
     int team = StringToInt(teamStr);
 
     if (g_isSpectatorsBlocked && team == TEAM_SPECTATOR) {
-        CPrintToChat(client, "%s%t", PREFIX_COLORED, "Spectators team blocked until round end");
+        CPrintToChat(client, "%s%t", PREFIX_COLORED, "Spectators team is blocked");
 
         return Plugin_Stop;
     }
