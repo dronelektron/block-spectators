@@ -15,7 +15,7 @@ public Plugin myinfo = {
     name = "Block spectators",
     author = "Dron-elektron",
     description = "Allows you to block the spectators team at the end of the round or earlier",
-    version = "0.1.0",
+    version = "0.1.1",
     url = ""
 };
 
@@ -92,7 +92,7 @@ public Action CommandListener_JoinTeam(int client, const char[] command, int arg
     int team = StringToInt(teamStr);
 
     if (g_isSpectatorsBlocked && team == TEAM_SPECTATOR) {
-        CPrintToChat(client, "%s%t", PREFIX_COLORED, "Spectators team blocked until round end");
+        CPrintToChat(client, "%s%t", PREFIX_COLORED, "Spectators team is blocked");
 
         return Plugin_Stop;
     }
