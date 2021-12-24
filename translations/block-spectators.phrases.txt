@@ -1,0 +1,12 @@
+"Phrases"
+{
+    "Spectators team was blocked"
+    {
+        "en"    "{default}Spectators team was blocked"
+    }
+
+    "Spectators team is blocked"
+    {
+        "en"    "{default}Spectators team is blocked"
+    }
+}
