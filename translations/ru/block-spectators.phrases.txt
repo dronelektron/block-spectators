@@ -1,0 +1,12 @@
+"Phrases"
+{
+    "Spectators team was blocked"
+    {
+        "ru"    "{default}Команда наблюдателей была заблокирована"
+    }
+
+    "Spectators team is blocked"
+    {
+        "ru"    "{default}Команда наблюдателей заблокирована"
+    }
+}
