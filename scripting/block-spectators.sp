@@ -23,6 +23,7 @@ ConVar g_pluginEnabled = null;
 ConVar g_blockTimeOffset = null;
 
 Handle g_blockTimer = null;
+float g_blockTimerEndTime = 0.0;
 bool g_isSpectatorsBlocked = false;
 
 public void OnPluginStart() {
@@ -31,6 +32,7 @@ public void OnPluginStart() {
 
     HookEvent("dod_round_start", Event_RoundStart);
     HookEvent("dod_round_active", Event_RoundActive);
+    HookEvent("dod_timer_time_added", Event_TimerTimeAdded);
     AddCommandListener(CommandListener_JoinTeam, "jointeam");
     LoadTranslations("block-spectators.phrases");
     AutoExecConfig(true, "block-spectators");
@@ -46,6 +48,12 @@ public void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 
 public void Event_RoundActive(Event event, const char[] name, bool dontBroadcast) {
     CreateBlockTimer();
+}
+
+public void Event_TimerTimeAdded(Event event, const char[] name, bool dontBroadcast) {
+    int secondsAdded = event.GetInt("seconds_added");
+
+    ExtendBlockTimer(secondsAdded);
 }
 
 void UnblockSpectators() {
@@ -67,7 +75,22 @@ void CreateBlockTimer() {
     float timeRemanining = GetEntPropFloat(timerEntity, Prop_Send, "m_flTimeRemaining");
     float timerDelay = timeRemanining - GetBlockTimeOffset() - 1.0;
 
+    if (timerDelay < 0.0) {
+        timerDelay = 0.0;
+    }
+
     g_blockTimer = CreateTimer(timerDelay, Timer_BlockSpectators);
+    g_blockTimerEndTime = GetGameTime() + timerDelay;
+}
+
+void ExtendBlockTimer(int secondsAdded) {
+    delete g_blockTimer;
+
+    float timerSecondsLeft = g_blockTimerEndTime - GetGameTime();
+    float timerDelay = timerSecondsLeft + secondsAdded;
+
+    g_blockTimer = CreateTimer(timerDelay, Timer_BlockSpectators);
+    g_blockTimerEndTime = GetGameTime() + timerDelay;
 }
 
 public Action Timer_BlockSpectators(Handle timer) {
