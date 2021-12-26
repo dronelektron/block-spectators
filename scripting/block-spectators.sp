@@ -49,8 +49,7 @@ public void Event_RoundActive(Event event, const char[] name, bool dontBroadcast
 }
 
 void UnblockSpectators() {
-    DeleteBlockTimer();
-
+    delete g_blockTimer;
     g_isSpectatorsBlocked = false;
 }
 
@@ -66,13 +65,9 @@ void CreateBlockTimer() {
     }
 
     float timeRemanining = GetEntPropFloat(timerEntity, Prop_Send, "m_flTimeRemaining");
-    float timerDelay = timeRemanining - GetBlockTimeOffset();
+    float timerDelay = timeRemanining - GetBlockTimeOffset() - 1.0;
 
     g_blockTimer = CreateTimer(timerDelay, Timer_BlockSpectators);
-}
-
-void DeleteBlockTimer() {
-    delete g_blockTimer;
 }
 
 public Action Timer_BlockSpectators(Handle timer) {
