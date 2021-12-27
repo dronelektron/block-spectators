@@ -20,6 +20,7 @@ public Plugin myinfo = {
 };
 
 ConVar g_pluginEnabled = null;
+ConVar g_notificationsEnabled = null;
 ConVar g_blockTimeOffset = null;
 
 Handle g_blockTimer = null;
@@ -28,6 +29,7 @@ bool g_isSpectatorsBlocked = false;
 
 public void OnPluginStart() {
     g_pluginEnabled = CreateConVar("sm_blockspectators", "1", "Enable (1) or disable (0) spectators team blocking");
+    g_notificationsEnabled = CreateConVar("sm_blockspectators_notifications", "1", "Enable (1) or disable (0) notifications");
     g_blockTimeOffset = CreateConVar("sm_blockspectators_time_offset", "0", "Time offset (in seconds) until the end of the round");
 
     HookEvent("dod_round_start", Event_RoundStart);
@@ -97,7 +99,7 @@ public Action Timer_BlockSpectators(Handle timer) {
     g_blockTimer = null;
     g_isSpectatorsBlocked = true;
 
-    CPrintToChatAll("%s%t", PREFIX_COLORED, "Spectators team was blocked");
+    NotifySpectatorsWasBlocked();
 
     return Plugin_Continue;
 }
@@ -110,7 +112,7 @@ public Action CommandListener_JoinTeam(int client, const char[] command, int arg
     int team = StringToInt(teamStr);
 
     if (g_isSpectatorsBlocked && team == TEAM_SPECTATOR) {
-        CPrintToChat(client, "%s%t", PREFIX_COLORED, "Spectators team is blocked");
+        NotifySpectatorsIsBlocked(client);
 
         return Plugin_Stop;
     }
@@ -118,8 +120,24 @@ public Action CommandListener_JoinTeam(int client, const char[] command, int arg
     return Plugin_Continue;
 }
 
+void NotifySpectatorsWasBlocked() {
+    if (IsNotificationsEnabled()) {
+        CPrintToChatAll("%s%t", PREFIX_COLORED, "Spectators team was blocked");
+    }
+}
+
+void NotifySpectatorsIsBlocked(int client) {
+    if (IsNotificationsEnabled()) {
+        CPrintToChat(client, "%s%t", PREFIX_COLORED, "Spectators team is blocked");
+    }
+}
+
 bool IsPluginEnabled() {
     return g_pluginEnabled.IntValue == 1;
+}
+
+bool IsNotificationsEnabled() {
+    return g_notificationsEnabled.IntValue == 1;
 }
 
 float GetBlockTimeOffset() {
