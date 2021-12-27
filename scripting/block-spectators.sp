@@ -10,6 +10,7 @@
 #define ENTITY_NOT_FOUND -1
 #define TEAM_ARG_MAX_SIZE 2
 #define TEAM_SPECTATOR 1
+#define ROUND_TIMER_EXISTS_DEFAULT_VALUE true
 
 public Plugin myinfo = {
     name = "Block spectators",
@@ -26,6 +27,7 @@ ConVar g_blockTimeOffset = null;
 Handle g_blockTimer = null;
 float g_blockTimerEndTime = 0.0;
 bool g_isSpectatorsBlocked = false;
+bool g_isRoundTimerExists = ROUND_TIMER_EXISTS_DEFAULT_VALUE;
 
 public void OnPluginStart() {
     g_pluginEnabled = CreateConVar("sm_blockspectators", "1", "Enable (1) or disable (0) spectators team blocking");
@@ -34,10 +36,15 @@ public void OnPluginStart() {
 
     HookEvent("dod_round_start", Event_RoundStart);
     HookEvent("dod_round_active", Event_RoundActive);
+    HookEvent("dod_round_win", Event_RoundWin);
     HookEvent("dod_timer_time_added", Event_TimerTimeAdded);
     AddCommandListener(CommandListener_JoinTeam, "jointeam");
     LoadTranslations("block-spectators.phrases");
     AutoExecConfig(true, "block-spectators");
+}
+
+public void OnMapStart() {
+    g_isRoundTimerExists = ROUND_TIMER_EXISTS_DEFAULT_VALUE;
 }
 
 public void OnMapEnd() {
@@ -52,10 +59,21 @@ public void Event_RoundActive(Event event, const char[] name, bool dontBroadcast
     CreateBlockTimer();
 }
 
+public void Event_RoundWin(Event event, const char[] name, bool dontBroadcast) {
+    if (!g_isRoundTimerExists) {
+        BlockSpectators();
+    }
+}
+
 public void Event_TimerTimeAdded(Event event, const char[] name, bool dontBroadcast) {
     int secondsAdded = event.GetInt("seconds_added");
 
     ExtendBlockTimer(secondsAdded);
+}
+
+void BlockSpectators() {
+    g_isSpectatorsBlocked = true;
+    NotifySpectatorsWasBlocked();
 }
 
 void UnblockSpectators() {
@@ -71,6 +89,8 @@ void CreateBlockTimer() {
     int timerEntity = FindEntityByClassname(ENTITY_NOT_FOUND, "dod_round_timer");
 
     if (timerEntity == ENTITY_NOT_FOUND) {
+        g_isRoundTimerExists = false;
+
         return;
     }
 
@@ -97,9 +117,7 @@ void ExtendBlockTimer(int secondsAdded) {
 
 public Action Timer_BlockSpectators(Handle timer) {
     g_blockTimer = null;
-    g_isSpectatorsBlocked = true;
-
-    NotifySpectatorsWasBlocked();
+    BlockSpectators();
 
     return Plugin_Continue;
 }
