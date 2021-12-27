@@ -14,4 +14,5 @@ Allows you to block the spectators team at the end of the round or earlier
 ### Console Variables
 
 * sm_blockspectators - Enable (1) or disable (0) spectators team blocking [default: "1"]
+* sm_blockspectators_notifications - Enable (1) or disable (0) notifications [default: "1"]
 * sm_blockspectators_time_offset - Time offset (in seconds) until the end of the round [default: "0"]
