@@ -14,7 +14,7 @@
 
 #define NOTIFICATIONS_JOIN_ATTEMPT (1 << 0)
 #define NOTIFICATIONS_ROUND_END (1 << 1)
-#define NOTIFICATIONS_EARLY (1 << 2)
+#define NOTIFICATIONS_TIMER (1 << 2)
 
 public Plugin myinfo = {
     name = "Block spectators",
@@ -35,7 +35,7 @@ bool g_isRoundTimerExists = ROUND_TIMER_EXISTS_DEFAULT_VALUE;
 
 public void OnPluginStart() {
     g_pluginEnabled = CreateConVar("sm_blockspectators", "1", "Enable (1) or disable (0) spectators team blocking");
-    g_notificationsMode = CreateConVar("sm_blockspectators_notifications_mode", "7", "None (0), Join attempt (1), Round end (2), Early (4)");
+    g_notificationsMode = CreateConVar("sm_blockspectators_notifications_mode", "7", "None (0), Join attempt (1), Round end (2), Timer (4)");
     g_blockTimeOffset = CreateConVar("sm_blockspectators_time_offset", "0", "Time offset (in seconds) until the end of the round");
 
     HookEvent("dod_round_start", Event_RoundStart);
@@ -121,7 +121,7 @@ void ExtendBlockTimer(int secondsAdded) {
 
 public Action Timer_BlockSpectators(Handle timer) {
     g_blockTimer = null;
-    BlockSpectators(NOTIFICATIONS_EARLY);
+    BlockSpectators(NOTIFICATIONS_TIMER);
 
     return Plugin_Continue;
 }
