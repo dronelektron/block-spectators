@@ -35,7 +35,7 @@ bool g_isRoundTimerExists = ROUND_TIMER_EXISTS_DEFAULT_VALUE;
 
 public void OnPluginStart() {
     g_pluginEnabled = CreateConVar("sm_blockspectators", "1", "Enable (1) or disable (0) spectators team blocking");
-    g_notificationsMode = CreateConVar("sm_blockspectators_notifications_mode", "7", "0 - none, 1 - join attempt, 2 - round end, 4 - early");
+    g_notificationsMode = CreateConVar("sm_blockspectators_notifications_mode", "7", "None - 0, Join attempt - 1, Round end - 2, Early - 4");
     g_blockTimeOffset = CreateConVar("sm_blockspectators_time_offset", "0", "Time offset (in seconds) until the end of the round");
 
     HookEvent("dod_round_start", Event_RoundStart);
