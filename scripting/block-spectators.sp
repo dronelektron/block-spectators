@@ -12,6 +12,10 @@
 #define TEAM_SPECTATOR 1
 #define ROUND_TIMER_EXISTS_DEFAULT_VALUE true
 
+#define NOTIFICATIONS_JOIN_ATTEMPT (1 << 0)
+#define NOTIFICATIONS_ROUND_END (1 << 1)
+#define NOTIFICATIONS_EARLY (1 << 2)
+
 public Plugin myinfo = {
     name = "Block spectators",
     author = "Dron-elektron",
@@ -21,7 +25,7 @@ public Plugin myinfo = {
 };
 
 ConVar g_pluginEnabled = null;
-ConVar g_notificationsEnabled = null;
+ConVar g_notificationsMode = null;
 ConVar g_blockTimeOffset = null;
 
 Handle g_blockTimer = null;
@@ -31,7 +35,7 @@ bool g_isRoundTimerExists = ROUND_TIMER_EXISTS_DEFAULT_VALUE;
 
 public void OnPluginStart() {
     g_pluginEnabled = CreateConVar("sm_blockspectators", "1", "Enable (1) or disable (0) spectators team blocking");
-    g_notificationsEnabled = CreateConVar("sm_blockspectators_notifications", "1", "Enable (1) or disable (0) notifications");
+    g_notificationsMode = CreateConVar("sm_blockspectators_notifications_mode", "7", "0 - none, 1 - join attempt, 2 - round end, 4 - early");
     g_blockTimeOffset = CreateConVar("sm_blockspectators_time_offset", "0", "Time offset (in seconds) until the end of the round");
 
     HookEvent("dod_round_start", Event_RoundStart);
@@ -61,7 +65,7 @@ public void Event_RoundActive(Event event, const char[] name, bool dontBroadcast
 
 public void Event_RoundWin(Event event, const char[] name, bool dontBroadcast) {
     if (!g_isRoundTimerExists) {
-        BlockSpectators();
+        BlockSpectators(NOTIFICATIONS_ROUND_END);
     }
 }
 
@@ -71,9 +75,9 @@ public void Event_TimerTimeAdded(Event event, const char[] name, bool dontBroadc
     ExtendBlockTimer(secondsAdded);
 }
 
-void BlockSpectators() {
+void BlockSpectators(int notificationFlag) {
     g_isSpectatorsBlocked = true;
-    NotifySpectatorsWasBlocked();
+    NotifySpectatorsWasBlocked(notificationFlag);
 }
 
 void UnblockSpectators() {
@@ -117,7 +121,7 @@ void ExtendBlockTimer(int secondsAdded) {
 
 public Action Timer_BlockSpectators(Handle timer) {
     g_blockTimer = null;
-    BlockSpectators();
+    BlockSpectators(NOTIFICATIONS_EARLY);
 
     return Plugin_Continue;
 }
@@ -138,14 +142,18 @@ public Action CommandListener_JoinTeam(int client, const char[] command, int arg
     return Plugin_Continue;
 }
 
-void NotifySpectatorsWasBlocked() {
-    if (IsNotificationsEnabled()) {
+void NotifySpectatorsWasBlocked(int notificationFlag) {
+    bool isNotificationEnalbed = IsNotificationFlagEnabled(notificationFlag);
+
+    if (isNotificationEnalbed) {
         CPrintToChatAll("%s%t", PREFIX_COLORED, "Spectators team was blocked");
     }
 }
 
 void NotifySpectatorsIsBlocked(int client) {
-    if (IsNotificationsEnabled()) {
+    bool isNotificationEnalbed = IsNotificationFlagEnabled(NOTIFICATIONS_JOIN_ATTEMPT);
+
+    if (isNotificationEnalbed) {
         CPrintToChat(client, "%s%t", PREFIX_COLORED, "Spectators team is blocked");
     }
 }
@@ -154,8 +162,8 @@ bool IsPluginEnabled() {
     return g_pluginEnabled.IntValue == 1;
 }
 
-bool IsNotificationsEnabled() {
-    return g_notificationsEnabled.IntValue == 1;
+bool IsNotificationFlagEnabled(int flag) {
+    return (g_notificationsMode.IntValue & flag) == flag;
 }
 
 float GetBlockTimeOffset() {
