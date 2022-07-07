@@ -8,7 +8,7 @@ Allows you to block the spectators team at the end of the round or earlier
 
 ### Installation
 
-* Download latest [release](https://github.com/dronelektron/block-spectators/releases) (compiled for SourceMod 1.10)
+* Download latest [release](https://github.com/dronelektron/block-spectators/releases) (compiled for SourceMod 1.11)
 * Extract "plugins" folder to "addons/sourcemod" folder of your server
 
 ### Console Variables
