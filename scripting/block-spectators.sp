@@ -3,10 +3,6 @@
 
 #include "morecolors"
 
-#pragma semicolon 1
-#pragma newdecls required
-
-#include "bs/console-command"
 #include "bs/console-variable"
 #include "bs/message"
 #include "bs/use-case"
@@ -20,17 +16,17 @@ public Plugin myinfo = {
     name = "Block spectators",
     author = "Dron-elektron",
     description = "Allows you to block the spectators team at the end of the round or earlier",
-    version = "1.0.1",
+    version = "1.0.2",
     url = "https://github.com/dronelektron/block-spectators"
 };
 
 public void OnPluginStart() {
+    Command_Create();
     Variable_Create();
     HookEvent("dod_round_start", Event_RoundStart);
     HookEvent("dod_round_active", Event_RoundActive);
     HookEvent("dod_round_win", Event_RoundWin);
     HookEvent("dod_timer_time_added", Event_TimerTimeAdded);
-    AddCommandListener(CommandListener_JoinTeam, "jointeam");
     LoadTranslations("block-spectators.phrases");
     AutoExecConfig(true, "block-spectators");
 }

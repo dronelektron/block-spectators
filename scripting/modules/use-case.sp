@@ -3,8 +3,18 @@ static float g_blockTimerEndTime = 0.0;
 static bool g_isSpectatorsBlocked = false;
 static bool g_isRoundTimerExists = ROUND_TIMER_EXISTS_DEFAULT_VALUE;
 
-bool UseCase_IsSpectatorsBlocked() {
-    return g_isSpectatorsBlocked;
+bool UseCase_OnClientJoinTeam(int client, int team) {
+    bool isBlocked = true;
+
+    isBlocked &= g_isSpectatorsBlocked;
+    isBlocked &= team == TEAM_SPECTATOR;
+    isBlocked &= IsPlayerAlive(client);
+
+    if (isBlocked) {
+        MessagePrint_SpectatorsIsBlocked(client);
+    }
+
+    return !isBlocked;
 }
 
 void UseCase_SetRoundTimerExists(bool exists) {

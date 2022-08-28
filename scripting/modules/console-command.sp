@@ -1,15 +1,9 @@
+void Command_Create() {
+    AddCommandListener(CommandListener_JoinTeam, "jointeam");
+}
+
 public Action CommandListener_JoinTeam(int client, const char[] command, int argc) {
-    char teamStr[TEAM_ARG_MAX_SIZE];
+    int team = GetCmdArgInt(1);
 
-    GetCmdArg(1, teamStr, sizeof(teamStr));
-
-    int team = StringToInt(teamStr);
-
-    if (UseCase_IsSpectatorsBlocked() && team == TEAM_SPECTATOR) {
-        MessagePrint_SpectatorsIsBlocked(client);
-
-        return Plugin_Stop;
-    }
-
-    return Plugin_Continue;
+    return UseCase_OnClientJoinTeam(client, team) ? Plugin_Continue : Plugin_Stop;
 }
