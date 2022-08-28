@@ -16,7 +16,7 @@ public Plugin myinfo = {
     name = "Block spectators",
     author = "Dron-elektron",
     description = "Allows you to block the spectators team at the end of the round or earlier",
-    version = "1.0.1",
+    version = "1.0.2",
     url = "https://github.com/dronelektron/block-spectators"
 };
 
