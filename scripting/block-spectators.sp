@@ -11,6 +11,8 @@
 #include "modules/message.sp"
 #include "modules/use-case.sp"
 
+#define AUTO_CREATE_YES true
+
 public Plugin myinfo = {
     name = "Block spectators",
     author = "Dron-elektron",
@@ -24,7 +26,7 @@ public void OnPluginStart() {
     Variable_Create();
     Event_Create();
     LoadTranslations("block-spectators.phrases");
-    AutoExecConfig(true, "block-spectators");
+    AutoExecConfig(AUTO_CREATE_YES, "block-spectators");
 }
 
 public void OnMapStart() {
