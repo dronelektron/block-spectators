@@ -1,9 +1,9 @@
 #include <sourcemod>
 #include <sdktools>
 
-#include "bs/console-variable"
-#include "bs/message"
-#include "bs/use-case"
+#include "block-spectators/console-variable"
+#include "block-spectators/message"
+#include "block-spectators/use-case"
 
 #include "modules/console-command.sp"
 #include "modules/console-variable.sp"
