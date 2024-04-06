@@ -1,8 +1,6 @@
 #include <sourcemod>
 #include <sdktools>
 
-#include "morecolors"
-
 #include "bs/console-variable"
 #include "bs/message"
 #include "bs/use-case"

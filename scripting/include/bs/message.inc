@@ -3,4 +3,6 @@
 #endif
 #define _bs_message_included
 
-#define PREFIX_COLORED "{green}[Block spectators] "
+#define COLOR_DEFAULT "\x01"
+
+#define PREFIX_COLORED "Prefix colored"

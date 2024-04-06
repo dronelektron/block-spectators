@@ -1,12 +1,17 @@
 "Phrases"
 {
+    "Prefix colored"
+    {
+        "en"    "3EFF3E[Block spectators] "
+    }
+
     "Spectators team was blocked"
     {
-        "en"    "{default}Spectators team was blocked"
+        "en"    "Spectators team was blocked"
     }
 
     "Spectators team is blocked"
     {
-        "en"    "{default}Spectators team is blocked"
+        "en"    "Spectators team is blocked"
     }
 }
